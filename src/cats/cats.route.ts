@@ -49,6 +49,7 @@ router.post("/cats", (req, res) => {
   try {
     const data = req.body;
     console.log(data);
+    Cat.push(data);
     res.status(200).send({
       success: true,
       data: {},
@@ -61,4 +62,65 @@ router.post("/cats", (req, res) => {
   }
 });
 
+//* UPDATE 전체 수정
+router.put("/cats/:id", (req, res) => {
+  try {
+    const { params, body } = req;
+    const idx = Cat.findIndex((cat) => cat.id === params.id);
+    Cat[idx] = body; // Update Code 추가
+    res.status(200).send({
+      success: true,
+      data: {
+        cat: Cat,
+      },
+    });
+  } catch (e) {
+    res.status(400).send({
+      success: false,
+      data: {},
+    });
+  }
+});
+
+//* UPDATE 부분 수정
+router.patch("/cats/:id", (req, res) => {
+  try {
+    const { params, body } = req;
+    const idx = Cat.findIndex((cat) => cat.id === params.id);
+    Cat[idx] = { ...Cat[idx], ...body }; //부분수정 Update Code
+    res.status(200).send({
+      success: true,
+      data: {
+        cat: Cat,
+      },
+    });
+  } catch (e) {
+    res.status(400).send({
+      success: false,
+      data: {},
+    });
+  }
+});
+
+//* DELETE 삭제
+router.delete("/cats/:id", (req, res) => {
+  try {
+    const {
+      params: { id },
+    } = req;
+
+    const newCat = Cat.filter((cat) => cat.id !== id);
+    res.status(200).send({
+      success: true,
+      data: {
+        cat: newCat,
+      },
+    });
+  } catch (e) {
+    res.status(400).send({
+      success: false,
+      data: {},
+    });
+  }
+});
 export default router;
