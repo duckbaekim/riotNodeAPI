@@ -8,6 +8,7 @@ class Server {
     const app: express.Application = express();
     this.app = app;
   }
+  private PORT: number = 8000;
 
   private setMiddleware() {
     this.app.use((req, res, next) => {
@@ -24,28 +25,32 @@ class Server {
       console.log("특정 미들웨어 사용");
       next();
     });
+    this.setRoute();
 
     //404 middleware
     this.app.use((req, res, next) => {
       console.log("404");
-      res.status(400).send({
+      res.status(404).send({
         error: "404 not found",
-      });'
+      });
     });
   }
 
   private setRoute() {
     this.app.use(catsRouter);
   }
+
+  public listen() {
+    this.setMiddleware();
+    this.app.listen(this.PORT, () => {
+      console.log(`${this.PORT}포트 서버 온`);
+    });
+  }
 }
 
-const app: express.Express = express();
+function init() {
+  const server = new Server();
+  server.listen();
+}
 
-const port: number = 8000;
-//미들웨어 사용은 라우터의 중복기능을 수행할때 사용
-
-// 미들웨어 끗
-
-app.listen(port, () => {
-  console.log(`${port}포트 서버 온`);
-});
+init();
